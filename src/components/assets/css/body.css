@@ -1,0 +1,9 @@
+.body {
+  display: flex;
+  flex-direction: row;
+  padding: 100px;
+}
+
+.body__content {
+  width: 100%;
+}
