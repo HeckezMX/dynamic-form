@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import SelectField from 'material-ui/SelectField';
 import TextField from 'material-ui/TextField';
 import MenuItem from 'material-ui/MenuItem';
@@ -18,13 +19,16 @@ const inlineStyles = {
   },
 };
 class MultiFieldRules extends Component {
+  static propTypes = {
+    field: PropTypes.object.isRequired
+  }
+
   constructor(props) {
     super(props);
     this.state = {
       rules: [],
     };
   }
-
   /**
    * Function that change the value of rule selected
    * @param  {[type]} objRule
@@ -93,6 +97,7 @@ class MultiFieldRules extends Component {
     );
   }
   render() {
+      console.log(this.propTypes);
     return (
       <div className="multiField-rules">
         <div className="multiField-rules__title">

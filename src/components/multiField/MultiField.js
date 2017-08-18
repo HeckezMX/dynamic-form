@@ -24,7 +24,9 @@ class MultiField extends Component {
       showCheckboxes: false,
     };
   }
-
+  componentDidUpdate() {
+    this.handleGetCurrentField();
+  }
   /**
    * This function adds new fields
    */
@@ -80,10 +82,10 @@ class MultiField extends Component {
    * This function change status to openAlert to remove element
    * @param  {[type]} inputID Object from the selected checkbox
    */
-  handleOpenAlert = (inputID) => () => {
+  handleOpenAlert = (field) => () => {
     this.setState({
       openAlert: true,
-      tmpID: inputID,
+      tmpID: field.id
     });
   };
 
@@ -96,12 +98,12 @@ class MultiField extends Component {
 
   /**
    * This function open the Editor of element
-   * @param  {[type]} inputID Object from the selected
+   * @param  {[type]} field Object from the selected
    */
-  handleOpenEditor = (inputID) => () => {
+  handleOpenEditor = (field) => () => {
     this.setState({
       openEditor: true,
-      tmpID: inputID,
+      tmpID: String(field.id)
     });
   };
 
@@ -112,6 +114,9 @@ class MultiField extends Component {
     this.setState({ openEditor: false });
   };
 
+  handleGetCurrentField = () => {
+    return this.state.fields.find((item) => item.id === this.state.tmpID) || {};
+  }
   /**
    * This function submit the data
    */
@@ -195,12 +200,12 @@ class MultiField extends Component {
                     <TableRowColumn>
                       <RaisedButton
                         icon={<FontIcon className="material-icons icon-edit" />}
-                        onClick={this.handleOpenEditor(inputID)}
+                        onClick={this.handleOpenEditor(field)}
                       />
                       <RaisedButton
                         secondary={true}
                         icon={<FontIcon className="material-icons icon-delete" />}
-                        onClick={this.handleOpenAlert(inputID)}
+                        onClick={this.handleOpenAlert(field)}
                       />
                     </TableRowColumn>
                   </TableRow>
@@ -223,7 +228,7 @@ class MultiField extends Component {
           open={this.state.openEditor}
           onRequestClose={this.handleCloseEditor}
         >
-          <MultiFieldRules />
+          <MultiFieldRules field={this.handleGetCurrentField()} />
         </Dialog>
       </div>
     );
