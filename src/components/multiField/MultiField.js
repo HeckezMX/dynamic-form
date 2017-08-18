@@ -18,7 +18,7 @@ class MultiField extends Component {
       openAlert: false,
       openEditor: false,
       fields: [{
-        id: '',
+        id: '1',
         name: '',
         isRequired: false,
         rules: {}
@@ -34,20 +34,27 @@ class MultiField extends Component {
    * This function adds new fields
    */
   handleAddField = () => {
-   this.setState({ fields: this.state.fields.concat([{
-     id: '',
-     name: '',
-     isRequired: false,
-     rules: {}
-   }])
- });
+   this.setState({ fields: this.state.fields.concat(
+     [{
+       id: String(this.state.fields.length + 1),
+       name: '',
+       isRequired: false,
+       rules: {}
+     }])
+   });
   }
-  handleFieldNameChange = (inputId) => (evt) => {
-  const newField = this.state.fields.map((field, id) => {
-    if (inputId !== id) return field;
-    return { ...field, name: evt.target.value };
+  /**
+   * This function update the field name
+   * @param  {[type]} objField ID from the selected input
+   */
+  handleFieldNameChange = (objField) => (evt) => {
+  objField.name = evt.target.value;
+  let dataFields = this.state.fields;
+  let fieldIndex = dataFields.findIndex(function(item) {
+    return item.id === objField.id;
   });
-  this.setState({ fields: newField });
+  dataFields[fieldIndex] = objField;
+  this.setState({ fields: dataFields });
 }
   /**
    * This function remove fields
@@ -57,9 +64,18 @@ class MultiField extends Component {
     this.setState({ fields: this.state.fields.filter((s, id) => inputID !== id) });
     this.handleCloseAlert();
   }
-  handleUpdateCheck = (inputID) => () => {
-    console.log(this.state.fields.filter((item) => console.log(item)));
-    //this.setState({ fields: this.state.fields.filter((s, id) => inputID !== id) });
+  /**
+   * This function change status to field property isRequired
+   * @param  {[type]} inputID ID from the selected input
+   */
+  handleUpdateCheck = (objField) => () => {
+    objField.isRequired = (objField.isRequired) ? false : true;
+    let dataFields = this.state.fields;
+    let fieldIndex = dataFields.findIndex(function(item) {
+      return item.id === objField.id;
+    });
+    dataFields[fieldIndex] = objField;
+    this.setState({ fields: dataFields });
   }
   handleOpenAlert = (inputID) => () => {
     this.setState({
@@ -80,7 +96,7 @@ class MultiField extends Component {
     this.setState({ openEditor: false });
   };
   handleSubmit = () => {
-    console.log('entre');
+    console.log(this.state.fields);
   }
 
   render() {
@@ -117,7 +133,8 @@ class MultiField extends Component {
           <RaisedButton
             label="Save"
             primary={true}
-            icon={<FontIcon className="material-icons icon-save" />
+            icon={<FontIcon className="material-icons icon-save"
+            onClick={this.handleSubmit} />
           }/>
           <RaisedButton
             label="New Field"
@@ -126,7 +143,7 @@ class MultiField extends Component {
             onClick={this.handleAddField} />
         </div>
         <div className="multiField__form">
-          <form onSubmit={this.handleSubmit}>
+          <form>
             <Table selectable={false}>
               <TableHeader displaySelectAll={this.tableConfig.showCheckboxes} adjustForCheckbox={this.tableConfig.showCheckboxes}>
                 <TableRow>
@@ -141,7 +158,7 @@ class MultiField extends Component {
                   <TableRow key={inputID + 1}>
                     <TableRowColumn>
                       <TextField
-                        id={field.id + 1}
+                        id={field.id}
                         hintText="Field Name"
                         floatingLabelText="Field Name"
                         type="text"
@@ -150,7 +167,7 @@ class MultiField extends Component {
                     <TableRowColumn>
                       <Checkbox
                         checked={field.isRequired}
-                        onCheck={this.handleUpdateCheck(field.id + 1)}
+                        onCheck={this.handleUpdateCheck(field)}
                       />
                     </TableRowColumn>
                     <TableRowColumn>Rules</TableRowColumn>

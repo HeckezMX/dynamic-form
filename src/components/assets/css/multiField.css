@@ -5,3 +5,9 @@
 .multiField__actions {
   text-align: right;
 }
+.multiField-rules__actions {
+  text-align: right;
+}
+.multiField-rules__content {
+  padding-top: 20px;
+}
