@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import SelectField from 'material-ui/SelectField';
+import TextField from 'material-ui/TextField';
 import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
@@ -7,7 +8,15 @@ import FontIcon from 'material-ui/FontIcon';
 import rulesData from '../../rules.json';
 
 import '../assets/css/multiField.css';
-
+const inlineStyles = {
+  customWidth: {
+    width: 200,
+  },
+  customWidthInputs: {
+    width: 100,
+    marginLeft: 15,
+  },
+};
 class MultiFieldRules extends Component {
   constructor(props) {
     super(props);
@@ -16,8 +25,60 @@ class MultiFieldRules extends Component {
     };
   }
 
-  handleChange = (event, index, value) => this.setState({value});
+  /**
+   * Function that change the value of rule selected
+   * @param  {[type]} objRule
+   */
+  handleChange = (objRule) => (event, index, values) => {
+    objRule.name = values;
+    let dataRules = this.state.rules;
+    let fieldIndex = dataRules.findIndex(function(item) {
+      return item.id === objRule.id;
+    });
+    dataRules[fieldIndex] = objRule;
+    this.setState({ rules: dataRules });
+  };
 
+  /**
+   * Function that add additional fields of validation to rule selected
+   * @param  {[type]} objRule
+   */
+  handleAdditionalRules = (objRule) => {
+    let items = rulesData.find(function(rule) {
+      if(rule.name === objRule.name && rule.arguments && rule.arguments.length > 0) {
+        return rule.arguments.map((argument, index) => argument);
+        }
+      });
+      if(items) {
+        return items.arguments.map(function(item) {
+          return (
+            <TextField key={item}
+              hintText={item}
+              type="text"
+              style={inlineStyles.customWidthInputs}
+            />
+          )
+        });
+      }
+    }
+
+  /**
+   * Function that add new rule
+   * @param  {[type]} objRule
+   */
+  handleNewRule = () => {
+    this.setState({ rules: this.state.rules.concat(
+      [{
+        id: String(this.state.rules.length + 1),
+        name: ''
+      }])
+    });
+  }
+
+  /**
+   * Function that create option list of rules
+   * @param  {[type]} rulesData JSON of options
+   */
   menuItems = (rulesData) => {
     return rulesData.map(function(rule) {
       return (
@@ -42,19 +103,29 @@ class MultiFieldRules extends Component {
             label="New Rule"
             backgroundColor="#a4c639"
             icon={<FontIcon className="material-icons icon-add" />}
-            // onClick={this.handleNewRule}
+            onClick={this.handleNewRule}
           />
         </div>
         <div className="multiField-rules__content">
-          <SelectField
-            multiple={false}
-            hintText="Select a rule"
-            value={this.state.value}
-            onChange={this.handleChange}
-            selectionRenderer={this.selectionRenderer}
-          >
-            {this.menuItems(rulesData)}
-          </SelectField>
+          {this.state.rules.map((rule, index) => (
+            <div className="multiField-rules__content__rules" key={index}>
+              <div className="rule">
+                <SelectField
+                  id = {String(rule.id)}
+                  multiple={false}
+                  hintText="Select a rule"
+                  value={rule.name}
+                  onChange={this.handleChange(rule)}
+                  style={inlineStyles.customWidth}
+                >
+                  {this.menuItems(rulesData)}
+                </SelectField>
+              </div>
+              <div className="additionals">
+                {this.handleAdditionalRules(rule)}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     );

@@ -43,19 +43,21 @@ class MultiField extends Component {
      }])
    });
   }
+
   /**
    * This function update the field name
    * @param  {[type]} objField ID from the selected input
    */
   handleFieldNameChange = (objField) => (evt) => {
-  objField.name = evt.target.value;
-  let dataFields = this.state.fields;
-  let fieldIndex = dataFields.findIndex(function(item) {
-    return item.id === objField.id;
-  });
-  dataFields[fieldIndex] = objField;
-  this.setState({ fields: dataFields });
-}
+    objField.name = evt.target.value;
+    let dataFields = this.state.fields;
+    let fieldIndex = dataFields.findIndex(function(item) {
+      return item.id === objField.id;
+    });
+    dataFields[fieldIndex] = objField;
+    this.setState({ fields: dataFields });
+  }
+
   /**
    * This function remove fields
    * @param  {[type]} inputID ID from the selected input
@@ -64,9 +66,10 @@ class MultiField extends Component {
     this.setState({ fields: this.state.fields.filter((s, id) => inputID !== id) });
     this.handleCloseAlert();
   }
+
   /**
    * This function change status to field property isRequired
-   * @param  {[type]} inputID ID from the selected input
+   * @param  {[type]} objField Object from the selected checkbox
    */
   handleUpdateCheck = (objField) => () => {
     objField.isRequired = (objField.isRequired) ? false : true;
@@ -77,24 +80,46 @@ class MultiField extends Component {
     dataFields[fieldIndex] = objField;
     this.setState({ fields: dataFields });
   }
+
+  /**
+   * This function change status to openAlert to remove element
+   * @param  {[type]} inputID Object from the selected checkbox
+   */
   handleOpenAlert = (inputID) => () => {
     this.setState({
       openAlert: true,
       tmpID: inputID,
     });
   };
+
+  /**
+   * This function close the Alert Dialog
+   */
   handleCloseAlert = () => {
     this.setState({ openAlert: false });
   };
+
+  /**
+   * This function open the Editor of element
+   * @param  {[type]} inputID Object from the selected
+   */
   handleOpenEditor = (inputID) => () => {
     this.setState({
       openEditor: true,
       tmpID: inputID,
     });
   };
+
+  /**
+   * This function close the Editor Dialog
+   */
   handleCloseEditor = () => {
     this.setState({ openEditor: false });
   };
+
+  /**
+   * This function submit the data
+   */
   handleSubmit = () => {
     console.log(this.state.fields);
   }
@@ -162,6 +187,7 @@ class MultiField extends Component {
                         hintText="Field Name"
                         floatingLabelText="Field Name"
                         type="text"
+                        onChange={this.handleFieldNameChange(field)}
                       />
                     </TableRowColumn>
                     <TableRowColumn>

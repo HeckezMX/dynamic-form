@@ -11,3 +11,7 @@
 .multiField-rules__content {
   padding-top: 20px;
 }
+.multiField-rules__content__rules {
+  display: flex;
+  flex-flow: row;
+}
