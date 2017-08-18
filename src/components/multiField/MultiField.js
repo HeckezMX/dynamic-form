@@ -17,12 +17,7 @@ class MultiField extends Component {
       tmpID: '',
       openAlert: false,
       openEditor: false,
-      fields: [{
-        id: '1',
-        name: '',
-        isRequired: false,
-        rules: {}
-      }],
+      fields: [],
     };
     // Table Config
     this.tableConfig = {
